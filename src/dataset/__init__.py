@@ -30,6 +30,7 @@ from .kitti_dataset import KITTIDataset
 from .nyu_dataset import NYUDataset
 from .scannet_dataset import ScanNetDataset
 from .vkitti_dataset import VirtualKITTIDataset
+from .cifar10_dataset import CIFAR10Dataset
 
 
 dataset_name_class_dict = {
@@ -40,6 +41,7 @@ dataset_name_class_dict = {
     "eth3d": ETH3DDataset,
     "diode": DIODEDataset,
     "scannet": ScanNetDataset,
+    "cifar10": CIFAR10Dataset,
 }
 
 

@@ -3,22 +3,25 @@ base_config:
 - config/wandb.yaml
 - config/dataset/dataset_train.yaml
 - config/dataset/dataset_val.yaml
-- config/dataset/dataset_vis.yaml
+# - config/dataset/dataset_vis.yaml
 - config/model_sdv2.yaml
 
 
 pipeline:
   name: MarigoldPipeline
   kwargs:
-    scale_invariant: true
-    shift_invariant: true
+    scale_invariant: false
+    shift_invariant: false
 
+# depth_normalization:
+#   type: scale_shift_depth
+#   clip: true
+#   norm_min: -1.0
+#   norm_max: 1.0
+#   min_max_quantile: 0.02
 depth_normalization:
-  type: scale_shift_depth
-  clip: true
-  norm_min: -1.0
-  norm_max: 1.0
-  min_max_quantile: 0.02
+  type: none  # We don't need depth normalization for classification
+
 
 augmentation:
   lr_flip_p: 0.5
