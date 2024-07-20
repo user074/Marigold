@@ -202,14 +202,14 @@ if "__main__" == __name__:
             OmegaConf.save(config=cfg, f=f)
         logging.info(f"Config saved to {_output_path}")
         # Copy and tar code on the first run
-        _temp_code_dir = os.path.join(out_dir_run, "code_tar")
-        _code_snapshot_path = os.path.join(out_dir_run, "code_snapshot.tar")
-        os.system(
-            f"rsync --relative -arhvz --quiet --filter=':- .gitignore' --exclude '.git' . '{_temp_code_dir}'"
-        )
-        os.system(f"tar -cf {_code_snapshot_path} {_temp_code_dir}")
-        os.system(f"rm -rf {_temp_code_dir}")
-        logging.info(f"Code snapshot saved to: {_code_snapshot_path}")
+        # _temp_code_dir = os.path.join(out_dir_run, "code_tar")
+        # _code_snapshot_path = os.path.join(out_dir_run, "code_snapshot.tar")
+        # os.system(
+        #     f"rsync --relative -arhvz --quiet --filter=':- .gitignore' --exclude '.git' . '{_temp_code_dir}'"
+        # )
+        # os.system(f"tar -cf {_code_snapshot_path} {_temp_code_dir}")
+        # os.system(f"rm -rf {_temp_code_dir}")
+        # logging.info(f"Code snapshot saved to: {_code_snapshot_path}")
 
     # -------------------- Copy data to local scratch (Slurm) --------------------
     if is_on_slurm() and (not args.do_not_copy_data):
@@ -305,20 +305,20 @@ if "__main__" == __name__:
         val_loaders.append(_val_loader)
 
     # Visualization dataset
-    vis_loaders: List[DataLoader] = []
-    for _vis_dic in cfg_data.vis:
-        _vis_dataset = get_dataset(
-            _vis_dic,
-            base_data_dir=base_data_dir,
-            mode=DatasetMode.EVAL,
-        )
-        _vis_loader = DataLoader(
-            dataset=_vis_dataset,
-            batch_size=1,
-            shuffle=False,
-            num_workers=cfg.dataloader.num_workers,
-        )
-        vis_loaders.append(_vis_loader)
+    # vis_loaders: List[DataLoader] = []
+    # for _vis_dic in cfg_data.vis:
+    #     _vis_dataset = get_dataset(
+    #         _vis_dic,
+    #         base_data_dir=base_data_dir,
+    #         mode=DatasetMode.EVAL,
+    #     )
+    #     _vis_loader = DataLoader(
+    #         dataset=_vis_dataset,
+    #         batch_size=1,
+    #         shuffle=False,
+    #         num_workers=cfg.dataloader.num_workers,
+    #     )
+    #     vis_loaders.append(_vis_loader)
 
     # -------------------- Model --------------------
     _pipeline_kwargs = cfg.pipeline.kwargs if cfg.pipeline.kwargs is not None else {}
@@ -347,7 +347,7 @@ if "__main__" == __name__:
         out_dir_vis=out_dir_vis,
         accumulation_steps=accumulation_steps,
         val_dataloaders=val_loaders,
-        vis_dataloaders=vis_loaders,
+        # vis_dataloaders=vis_loaders,
     )
 
     # -------------------- Checkpoint --------------------

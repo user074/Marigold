@@ -1,20 +1,22 @@
 from torchvision.datasets import CIFAR10
 from torchvision import transforms
 import torch
-import numpy as np
-from .base_depth_dataset import BaseDepthDataset, DepthFileNameMode
+from .base_depth_dataset import BaseDepthDataset, DatasetMode, DepthFileNameMode
 
 class CIFAR10Dataset(BaseDepthDataset):
-    def __init__(self, split="train", **kwargs):
+    def __init__(self, mode: DatasetMode, split="train", **kwargs):
         super().__init__(
+            mode=mode,
+            filename_ls_path="",  # Dummy value
+            dataset_dir="./data",  # CIFAR10 will be downloaded here
             min_depth=0.0,
             max_depth=1.0,
             has_filled_depth=True,
-            name_mode=DepthFileNameMode.rgb_id,
+            name_mode=DepthFileNameMode.id,  # Dummy value
             **kwargs
         )
         
-        self.cifar10 = CIFAR10(root='./data', train=(split == "train"), download=True)
+        self.cifar10 = CIFAR10(root=self.dataset_dir, train=(split == "train"), download=True)
         self.transform = transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
@@ -35,6 +37,7 @@ class CIFAR10Dataset(BaseDepthDataset):
         return {
             "rgb_int": (image * 255).byte(),
             "rgb_norm": image,
+            "depth_raw_norm": depth,
             "depth_raw_linear": depth,
             "depth_filled_linear": depth,
             "valid_mask_raw": torch.ones_like(depth, dtype=torch.bool),

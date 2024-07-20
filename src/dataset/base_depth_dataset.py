@@ -61,13 +61,13 @@ class BaseDepthDataset(Dataset):
     def __init__(
         self,
         mode: DatasetMode,
-        filename_ls_path: str,
-        dataset_dir: str,
-        disp_name: str,
-        min_depth: float,
-        max_depth: float,
-        has_filled_depth: bool,
-        name_mode: DepthFileNameMode,
+        filename_ls_path: str = "",
+        dataset_dir: str = "",
+        disp_name: str = "",
+        min_depth: float = 0.0,
+        max_depth: float = 1.0,
+        has_filled_depth: bool = False,
+        name_mode: DepthFileNameMode = DepthFileNameMode.id,
         depth_transform: Union[DepthNormalizerBase, None] = None,
         augmentation_args: dict = None,
         resize_to_hw=None,
@@ -80,9 +80,6 @@ class BaseDepthDataset(Dataset):
         # dataset info
         self.filename_ls_path = filename_ls_path
         self.dataset_dir = dataset_dir
-        assert os.path.exists(
-            self.dataset_dir
-        ), f"Dataset does not exist at: {self.dataset_dir}"
         self.disp_name = disp_name
         self.has_filled_depth = has_filled_depth
         self.name_mode: DepthFileNameMode = name_mode
@@ -96,11 +93,12 @@ class BaseDepthDataset(Dataset):
         self.rgb_transform = rgb_transform
         self.move_invalid_to_far_plane = move_invalid_to_far_plane
 
-        # Load filenames
-        with open(self.filename_ls_path, "r") as f:
-            self.filenames = [
-                s.split() for s in f.readlines()
-            ]  # [['rgb.png', 'depth.tif'], [], ...]
+        # Load filenames only if filename_ls_path is provided
+        if filename_ls_path:
+            with open(self.filename_ls_path, "r") as f:
+                self.filenames = [s.split() for s in f.readlines()]
+        else:
+            self.filenames = []
 
         # Tar dataset
         self.tar_obj = None
